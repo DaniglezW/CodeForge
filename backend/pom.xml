@@ -8,13 +8,13 @@
         <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.rider.essentials</groupId>
-    <artifactId>Rider-Essentials-Server</artifactId>
+    <groupId>com.code.forge</groupId>
+    <artifactId>code-forge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Rider-Essentials-Server</name>
-    <description>Servidor Proyecto de Rider Essentials</description>
+    <name>code-forge</name>
+    <description>Servidor Proyecto de Code Forge</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>19</java.version>
     </properties>
     <dependencies>
         <dependency>

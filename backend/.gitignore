@@ -1,0 +1,18 @@
+# Dependencias de Java
+/.m2/       # Repositorio local de Maven
+/target/     # Directorio de compilación de Maven
+
+# Archivos de configuración de IDE
+.idea/       # Archivos de configuración de JetBrains (IntelliJ, WebStorm, etc.)
+.vscode/     # Archivos de configuración de Visual Studio Code
+
+# Archivos de configuración de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de editor
+*.swp
+*.swo
+
+# Archivos de logs
+*.log

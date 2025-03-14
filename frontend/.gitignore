@@ -1,0 +1,28 @@
+# Dependencias de node
+/node_modules/
+
+# Build de Vite (output de producción)
+dist/
+
+# Archivos de log
+*.log
+
+# Archivos de configuración de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de editor
+*.swp
+*.swo
+.idea/
+
+# Archivos específicos de npm
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Archivos de Tailwind CSS (si los generas automáticamente)
+tailwind.config.js
+
+# Archivos de configuración de PostCSS (si no usas este archivo)
+postcss.config.js
