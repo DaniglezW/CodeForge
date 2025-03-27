@@ -1,0 +1,7 @@
+com\code\forge\application\controller\api\IFormatController.class
+com\code\forge\application\utils\ApiDocumentation.class
+com\code\forge\domain\interfaces\IJpaToSqlService.class
+com\code\forge\domain\JpaToSqlService.class
+com\code\forge\Application.class
+com\code\forge\application\controller\FormatController.class
+com\code\forge\application\utils\Constants.class
