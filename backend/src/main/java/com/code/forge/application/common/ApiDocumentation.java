@@ -1,4 +1,4 @@
-package com.code.forge.application.utils;
+package com.code.forge.application.common;
 
 public final class ApiDocumentation {
 

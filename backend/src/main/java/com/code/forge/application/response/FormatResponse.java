@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SqlToJpaResponse {
+public class FormatResponse {
 
-    private String jpaModel;
+    private String response;
     private byte[] fileContent;
 
 }

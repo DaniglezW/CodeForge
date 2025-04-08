@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import "./../assets/styles/home.css";
-import { fetchSqlToJpa } from "../services/formatApi";
+import { fetchJpaToSql, fetchSqlToJpa, fetchSqlToJson } from "../services/formatApi";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { FaClipboard } from "react-icons/fa";
+import { SQLOperation } from "../constants/SqlOperation";
+import { cleanJpaModel } from "../utils/Utils";
 
 const Home = () => {
   const [loading, setLoading] = useState(false);
@@ -13,6 +15,7 @@ const Home = () => {
   const [outputFormat, setOutputFormat] = useState("");
   const [convertedText, setConvertedText] = useState("");
   const [conversionOptions, setConversionOptions] = useState([]);
+  const [sqlOperation, setSqlOperation] = useState(SQLOperation.SELECT);
 
   const handleInputChange = (e) => {
     const selectedInput = e.target.value;
@@ -23,13 +26,13 @@ const Home = () => {
         setConversionOptions(["XML", "CSV"]);
         break;
       case "jpa":
-        setConversionOptions(["SQL", "JSON"]);
+        setConversionOptions(["SQL"]);
         break;
       case "xml":
         setConversionOptions(["JSON", "CSV"]);
         break;
       case "sql":
-        setConversionOptions(["JPA"]);
+        setConversionOptions(["JPA", "JSON"]);
         break;
       default:
         setConversionOptions([]);
@@ -46,17 +49,48 @@ const Home = () => {
   };
 
   const handleFormat = () => {
+    setLoading(true);
     if (inputFormat === "sql" && outputFormat === "JPA") {
-      setLoading(true);
       fetchSqlToJpa(inputValue)
         .then((data) => {
-          setConvertedText(data.jpaModel);
+          setConvertedText(data.response);
           setShowModal(true);
         })
-        .catch((error) => console.error("Error:", error))
+        .catch(() => errorToast())
+        .finally(() => setLoading(false));
+    } else if (inputFormat === "jpa" && outputFormat === "SQL") {
+      const cleanedInputValue = cleanJpaModel(inputValue);
+
+      fetchJpaToSql(cleanedInputValue, sqlOperation)
+        .then((data) => {
+          setConvertedText(data.response);
+          setShowModal(true);
+        })
+        .catch(() => errorToast())
+        .finally(() => setLoading(false));
+    } else if (inputFormat === "sql" && outputFormat === "JSON") {
+      fetchSqlToJson(inputValue, sqlOperation)
+        .then((data) => {
+          setConvertedText(data.response);
+          setShowModal(true);
+        })
+        .catch(() => errorToast())
         .finally(() => setLoading(false));
     }
   };
+
+  const errorToast = () => {
+    toast.error('Error en el formato inesperado', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  }
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(convertedText).then(() => {
@@ -74,6 +108,24 @@ const Home = () => {
       console.error("Error al copiar: ", err);
     });
   };
+
+  const getFileExtension = (format) => {
+    switch (format) {
+      case "SQL":
+        return "sql"
+      case "JSON":
+        return "json"
+      default:
+        return "java"
+    }
+  };
+
+  const showSqlOptions = () => {
+    if ((inputFormat === "jpa" && outputFormat === "SQL") || (inputFormat === "sql" && outputFormat === "JSON")) {
+      return true;
+    }
+    return false;
+  }
 
   const cleanApp = () => {
     setInputFormat("");
@@ -97,9 +149,9 @@ const Home = () => {
           className="select"
         >
           <option value="">Selecciona el formato de entrada</option>
-          <option value="json">JSON</option>
+          {/* <option value="json">JSON</option> */}
           <option value="jpa">JPA</option>
-          <option value="xml">XML</option>
+          {/* <option value="xml">XML</option> */}
           <option value="sql">SQL</option>
         </select>
       </div>
@@ -124,6 +176,25 @@ const Home = () => {
             <option disabled>No hay opciones disponibles</option>
           )}
         </select>
+
+        {showSqlOptions() && (
+          <div className="select-container">
+            <label htmlFor="sql-operation">Operación SQL</label>
+            <select
+              id="sql-operation"
+              value={sqlOperation}
+              onChange={(e) => setSqlOperation(e.target.value)}
+              className="select"
+            >
+              <option value={SQLOperation.SELECT}>{SQLOperation.SELECT}</option>
+              <option value={SQLOperation.INSERT}>{SQLOperation.INSERT}</option>
+              <option value={SQLOperation.UPDATE}>{SQLOperation.UPDATE}</option>
+              <option value={SQLOperation.DELETE}>{SQLOperation.DELETE}</option>
+              <option value={SQLOperation.CREATE}>{SQLOperation.CREATE}</option>
+            </select>
+          </div>
+        )}
+
       </div>
 
       {inputFormat && outputFormat && (
@@ -171,17 +242,17 @@ const Home = () => {
               <button
                 className="format-button"
                 onClick={() => {
-                  const blob = new Blob([convertedText], { type: "application/java" });
+                  const blob = new Blob([convertedText], { type: `application/${getFileExtension(outputFormat)}` });
                   const url = window.URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
-                  a.download = "Model.java";
+                  a.download = `File.${getFileExtension(outputFormat)}`;
                   document.body.appendChild(a);
                   a.click();
                   document.body.removeChild(a);
                 }}
               >
-                Descargar Model.java
+                Descargar File.{getFileExtension(outputFormat)}
               </button>
             </div>
           </div>
