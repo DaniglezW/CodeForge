@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./../assets/styles/home.css";
-import { fetchJpaToSql, fetchSqlToJpa, fetchSqlToJson } from "../services/formatApi";
+import { fetchJpaToJson, fetchJpaToSql, fetchSqlToJpa, fetchSqlToJson } from "../services/formatApi";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { FaClipboard } from "react-icons/fa";
@@ -22,14 +22,8 @@ const Home = () => {
     setInputFormat(selectedInput);
 
     switch (selectedInput) {
-      case "json":
-        setConversionOptions(["XML", "CSV"]);
-        break;
       case "jpa":
-        setConversionOptions(["SQL"]);
-        break;
-      case "xml":
-        setConversionOptions(["JSON", "CSV"]);
+        setConversionOptions(["SQL", "JSON"]);
         break;
       case "sql":
         setConversionOptions(["JPA", "JSON"]);
@@ -76,6 +70,14 @@ const Home = () => {
         })
         .catch(() => errorToast())
         .finally(() => setLoading(false));
+    }  else if (inputFormat === "jpa" && outputFormat === "JSON") {
+      fetchJpaToJson(inputValue, sqlOperation)
+        .then((data) => {
+          setConvertedText(data.response);
+          setShowModal(true);
+        })
+        .catch(() => errorToast())
+        .finally(() => setLoading(false));
     }
   };
 
@@ -115,16 +117,15 @@ const Home = () => {
         return "sql"
       case "JSON":
         return "json"
+      case "JAVA":
+        return "java"
       default:
         return "java"
     }
   };
 
   const showSqlOptions = () => {
-    if ((inputFormat === "jpa" && outputFormat === "SQL") || (inputFormat === "sql" && outputFormat === "JSON")) {
-      return true;
-    }
-    return false;
+    return (inputFormat === "jpa" && outputFormat === "SQL") || (inputFormat === "sql" && outputFormat === "JSON");
   }
 
   const cleanApp = () => {
@@ -149,9 +150,7 @@ const Home = () => {
           className="select"
         >
           <option value="">Selecciona el formato de entrada</option>
-          {/* <option value="json">JSON</option> */}
           <option value="jpa">JPA</option>
-          {/* <option value="xml">XML</option> */}
           <option value="sql">SQL</option>
         </select>
       </div>

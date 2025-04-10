@@ -47,3 +47,19 @@ export const fetchSqlToJson = async (request, sqlOperationType) => {
     fileContent: new Uint8Array(data.fileContent),
   };
 };
+
+export const fetchJpaToJson = async (request, sqlOperationType) => {
+  const response = await fetch(Constants.API_BASE_URL + Constants.API_JPA_TO_JSON, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ request, sqlOperationType }),
+  });
+
+  if (!response.ok) throw new Error("Error en la conversión");
+
+  const data = await response.json();
+  return {
+    response: data.response,
+    fileContent: new Uint8Array(data.fileContent),
+  };
+};

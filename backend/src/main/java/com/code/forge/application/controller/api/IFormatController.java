@@ -61,4 +61,17 @@ public interface IFormatController {
     })
     ResponseEntity<FormatResponse> convertSqlToJson(@RequestBody FormatRequest request) throws IOException;
 
+    @PostMapping("/jpa-to-json")
+    @Operation(summary = "Convierte una Modelo JPA en un JSON y devuelve el resultado como texto y archivo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Conversión exitosa",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = FormatResponse.class))}),
+            @ApiResponse(responseCode = "400", description = "Entrada no válida",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = {@Content(mediaType = "application/json")})
+    })
+    ResponseEntity<FormatResponse> convertJpaToJson(@RequestBody FormatRequest request) throws IOException;
+
 }

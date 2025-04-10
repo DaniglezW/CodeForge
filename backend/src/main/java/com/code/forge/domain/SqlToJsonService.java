@@ -4,7 +4,6 @@ import com.code.forge.application.common.SqlOperationType;
 import com.code.forge.application.request.FormatRequest;
 import com.code.forge.application.response.FormatResponse;
 import com.code.forge.domain.interfaces.ISqlToJsonService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +12,6 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Service
 public class SqlToJsonService implements ISqlToJsonService {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public FormatResponse convertSqlToJson(FormatRequest formatRequest) {
         String sqlQuery = formatRequest.getRequest();
@@ -93,9 +90,13 @@ public class SqlToJsonService implements ISqlToJsonService {
     }
 
     private String convertUpdateToJson(String sqlQuery) {
-        String cleanedQuery = sqlQuery.replaceAll("(?i)UPDATE\\s+", "").replaceAll("(?i)SET\\s+", "").trim();
+        String[] updateSplit = sqlQuery.split("(?i)SET");
+        if (updateSplit.length < 2) {
+            throw new IllegalArgumentException("No se encontró la cláusula SET en la query.");
+        }
 
-        String setPart = cleanedQuery.split("SET")[1].split("WHERE")[0].trim();
+        String[] setSplit = updateSplit[1].split("(?i)WHERE");
+        String setPart = setSplit[0].trim();
 
         String[] setColumns = setPart.split(",");
 
