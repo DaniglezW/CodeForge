@@ -1,7 +1,9 @@
 import { Constants } from "../constants/Constants";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export const fetchSqlToJpa = async (sqlQuery) => {
-  const response = await fetch(Constants.API_BASE_URL + Constants.API_SQL_TO_JPA, {
+  const response = await fetch(apiUrl + Constants.API_SQL_TO_JPA, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sqlQuery }),
@@ -17,7 +19,7 @@ export const fetchSqlToJpa = async (sqlQuery) => {
 };
 
 export const fetchJpaToSql = async (request, sqlOperationType) => {
-  const response = await fetch(Constants.API_BASE_URL + Constants.API_JPA_TO_SQL, {
+  const response = await fetch(apiUrl + Constants.API_JPA_TO_SQL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ request, sqlOperationType }),
@@ -33,7 +35,7 @@ export const fetchJpaToSql = async (request, sqlOperationType) => {
 };
 
 export const fetchSqlToJson = async (request, sqlOperationType) => {
-  const response = await fetch(Constants.API_BASE_URL + Constants.API_SQL_TO_JSON, {
+  const response = await fetch(apiUrl + Constants.API_SQL_TO_JSON, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ request, sqlOperationType }),
@@ -49,7 +51,7 @@ export const fetchSqlToJson = async (request, sqlOperationType) => {
 };
 
 export const fetchJpaToJson = async (request, sqlOperationType) => {
-  const response = await fetch(Constants.API_BASE_URL + Constants.API_JPA_TO_JSON, {
+  const response = await fetch(apiUrl + Constants.API_JPA_TO_JSON, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ request, sqlOperationType }),
